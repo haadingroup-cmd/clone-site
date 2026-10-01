@@ -1,6 +1,6 @@
 /**
- * Legal page copy. Plain-language templates written for HaadinGlobal's
- * actual data handling (forms → PostgreSQL, optional Resend email, WhatsApp).
+ * Legal page copy. Plain-language templates written for how this site works
+ * (forms are sent by the visitor through WhatsApp or email; nothing is stored).
  * Have them reviewed by a lawyer for your jurisdiction before relying on them.
  */
 export type LegalSection = { heading: string; body: string[] };
@@ -19,23 +19,22 @@ export const LEGAL_DOCS: Record<"privacy" | "terms" | "refund" | "security", Leg
       {
         heading: "What we collect",
         body: [
-          "Information you submit in our forms: name, email, phone/WhatsApp number, business name, website, the service and budget you're interested in, and your message.",
-          "When you use the free website audit, the URL you submit and the resulting report. Contact details are optional for the audit.",
-          "Basic technical data (such as IP address) is processed briefly to protect our forms from spam and abuse. IP addresses are stored only as one-way hashes for rate limiting.",
+          "This website does not store form submissions. When you fill in a form, your details are placed into a WhatsApp or email message that you choose to send to us.",
+          "We receive the information in the messages you send us: typically your name, phone/WhatsApp number, email, business, website, the service you're interested in and your message.",
+          "Our hosting provider may keep standard server logs (such as IP address and browser type) for security and reliability.",
         ],
       },
       {
         heading: "How we use it",
         body: [
           "To reply to your enquiry, prepare proposals and deliver services you request.",
-          "To prevent spam and abuse of our forms and tools.",
           "We do not sell your personal information and we do not use it for unrelated marketing without your consent.",
         ],
       },
       {
         heading: "Where it's stored",
         body: [
-          "Submissions are stored in a secured PostgreSQL database hosted by our infrastructure provider. Notification emails may be sent through our email provider (Resend). Conversations you start on WhatsApp are subject to WhatsApp's own privacy policy.",
+          "Messages you send us live in our WhatsApp and email accounts. Conversations on WhatsApp are also subject to WhatsApp's own privacy policy.",
         ],
       },
       { heading: "How long we keep it", body: ["We keep enquiry records for as long as needed to respond and manage our client relationship, and delete them on request unless we must keep them for legal or accounting reasons."] },
@@ -51,7 +50,7 @@ export const LEGAL_DOCS: Record<"privacy" | "terms" | "refund" | "security", Leg
     sections: [
       { heading: "Using this website", body: ["You may use this website to learn about our services, request quotes and run the free website audit. Don't misuse the site — including attempting to disrupt it, scrape it at scale, or submit content you don't have the right to share."] },
       { heading: "Estimates and pricing", body: ["Prices on this site are starting prices in Pakistani Rupees (PKR). Package-builder figures are estimates; the final scope and price are confirmed in a written proposal before any work starts. Advertising spend is paid directly to the ad platforms and is not included in our fees."] },
-      { heading: "Free website audit", body: ["The audit is an automated analysis of a single public web page, provided for information only. It does not guarantee rankings, traffic or sales. Only audit websites you own or are authorised to analyse."] },
+      { heading: "Free website audit", body: ["The free audit is a review of your website provided for information only. It does not guarantee rankings, traffic or sales. Only request audits for websites you own or are authorised to have reviewed."] },
       { heading: "Engagements", body: ["Client work is governed by the proposal or agreement we sign with you, which takes precedence over these terms. Monthly retainers run month-to-month unless a longer commitment is agreed in writing."] },
       { heading: "No guaranteed results", body: ["Marketing outcomes depend on many factors outside our control (platform algorithms, competition, budgets, product and market). We commit to professional work and transparent reporting, not to specific results, unless explicitly agreed in writing."] },
       { heading: "Intellectual property", body: ["Content on this website belongs to HaadinGlobal unless stated otherwise. Deliverables created for clients are transferred as described in each client agreement."] },
@@ -79,9 +78,7 @@ export const LEGAL_DOCS: Record<"privacy" | "terms" | "refund" | "security", Leg
     updated: UPDATED,
     sections: [
       { heading: "Transport security", body: ["The site is served exclusively over HTTPS with HSTS, plus a strict Content Security Policy and other modern security headers."] },
-      { heading: "Form protection", body: ["All form data is validated on the server, length-limited and sanitised. Forms are protected with rate limiting, a hidden honeypot field and timing checks to block automated spam, and cross-site requests are rejected."] },
-      { heading: "Admin access", body: ["The admin area requires an account with a strong password (stored only as a bcrypt hash) and uses signed, HTTP-only, secure session cookies. Sessions can be revoked instantly. Admin pages are excluded from search engines."] },
-      { heading: "Website audit tool", body: ["The audit only fetches public websites. Requests to private or internal network addresses are blocked, redirects are re-validated, and requests are limited in time and size."] },
+      { heading: "No stored form data", body: ["Forms on this site don't send data to our servers. Your details go directly from your device into a WhatsApp or email message that you choose to send, so there is no database of submissions to leak."] },
       { heading: "Reporting a vulnerability", body: ["If you believe you've found a security issue, please email haadinglobal@gmail.com with details. Please don't publicly disclose it until we've had a chance to fix it."] },
     ],
   },

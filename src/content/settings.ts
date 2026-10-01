@@ -1,6 +1,6 @@
 import type { SiteSettings } from "@/types";
 
-/** Default business settings. Editable in /admin/settings once seeded. */
+/** Default business settings. Edit here to change contact details, stats and social links. */
 export const DEFAULT_SETTINGS: SiteSettings = {
   companyName: "HaadinGlobal",
   tagline: "Digital Marketing & Technology Agency",

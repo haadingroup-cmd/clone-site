@@ -1,13 +1,13 @@
 import type { CaseStudyData } from "@/types";
 
 /**
- * Case studies seeded from HaadinGlobal's real project list and real
+ * Case studies built from HaadinGlobal's real project list and real
  * results screenshots (migrated from the previous site). Nothing here is
  * invented: project facts come from the old portfolio page and every metric
  * matches a screenshot in /public/images/results. Client names for the
  * results galleries are withheld, as on the previous site.
  *
- * Add verified numbers (before/after, metrics) from /admin/case-studies.
+ * Add new case studies here — only with numbers you can verify.
  */
 export const CASE_STUDIES: CaseStudyData[] = [
   {

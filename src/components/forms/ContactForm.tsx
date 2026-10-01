@@ -1,62 +1,64 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import Link from "next/link";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import type { z } from "zod";
-import { Field, Honeypot, Input, Select, Textarea } from "@/components/forms/fields";
-import { FormError, FormSuccess, SubmitButton } from "@/components/forms/FormFeedback";
-import { useApiForm } from "@/components/forms/useApiForm";
-import { useStartedAt } from "@/components/forms/useStartedAt";
+import { Field, Input, Select, Textarea } from "@/components/forms/fields";
+import { FormSent, SubmitButton } from "@/components/forms/FormFeedback";
 import { Icon } from "@/components/ui/Icon";
 import { BUDGET_OPTIONS, contactSchema } from "@/lib/validations/lead";
+import { composeMessage, mailtoLink, openWhatsApp, whatsappLink } from "@/lib/whatsapp";
 
 type FormIn = z.input<typeof contactSchema>;
 type FormOut = z.output<typeof contactSchema>;
 
-export function ContactForm({ services, whatsapp, defaultService }: { services: string[]; whatsapp: string; defaultService?: string }) {
-  const startedAt = useStartedAt();
+export function ContactForm({ services, whatsapp, email }: { services: string[]; whatsapp: string; email: string }) {
+  const [sent, setSent] = useState<{ wa: string; mail: string } | null>(null);
   const {
     register,
     handleSubmit,
-    setError,
-    reset: resetForm,
-    getValues,
+    reset,
     formState: { errors },
   } = useForm<FormIn, unknown, FormOut>({
     resolver: zodResolver(contactSchema),
-    defaultValues: {
-      source: "CONTACT",
-      name: "",
-      email: "",
-      phone: "",
-      business: "",
-      website: "",
-      service: defaultService && services.includes(defaultService) ? defaultService : "",
-      budget: "",
-      message: "",
-      company_fax: "",
-    },
+    defaultValues: { name: "", email: "", phone: "", business: "", website: "", service: "", budget: "", message: "" },
   });
-  const { status, message, submit, reset } = useApiForm<FormIn, { id: string }>("/api/leads", setError);
 
-  if (status === "success") {
+  if (sent) {
     return (
-      <FormSuccess
-        body="A strategist will review your enquiry and reply within 24 hours (usually much sooner). For the fastest response, continue the conversation on WhatsApp."
-        whatsappNumber={whatsapp}
-        whatsappMessage={`Hello HaadinGlobal, I just sent an enquiry via your website (${getValues("name")}). ${getValues("service") ? `Service: ${getValues("service")}.` : ""}`}
+      <FormSent
+        whatsappHref={sent.wa}
+        mailHref={sent.mail}
         onReset={() => {
           reset();
-          resetForm();
+          setSent(null);
         }}
       />
     );
   }
 
   return (
-    <form noValidate className="relative space-y-space-sm" onSubmit={handleSubmit((values) => submit({ ...values, startedAt: startedAt.current }))}>
-      <input type="hidden" {...register("source")} />
-      <Honeypot {...register("company_fax")} />
+    <form
+      noValidate
+      className="space-y-space-sm"
+      onSubmit={handleSubmit((v) => {
+        const message = composeMessage("Hello HaadinGlobal, I'm getting in touch via your website.", [
+          ["Name", v.name],
+          ["Email", v.email],
+          ["Phone / WhatsApp", v.phone],
+          ["Business", v.business],
+          ["Website", v.website],
+          ["Service", v.service],
+          ["Budget", v.budget],
+          ["Message", v.message],
+        ]);
+        const wa = whatsappLink(message, whatsapp);
+        openWhatsApp(wa);
+        setSent({ wa, mail: mailtoLink(email, `Website enquiry — ${v.name}`, message) });
+      })}
+    >
       <div className="grid gap-space-sm sm:grid-cols-2">
         <Field id="f-name" label="Name" error={errors.name?.message} required>
           <Input id="f-name" autoComplete="name" placeholder="Your full name" invalid={Boolean(errors.name)} {...register("name")} />
@@ -68,12 +70,12 @@ export function ContactForm({ services, whatsapp, defaultService }: { services: 
           <Input id="f-phone" type="tel" inputMode="tel" autoComplete="tel" placeholder="+92 300 1234567" invalid={Boolean(errors.phone)} {...register("phone")} />
         </Field>
         <Field id="f-business" label="Business" error={errors.business?.message}>
-          <Input id="f-business" autoComplete="organization" placeholder="Company or brand name" invalid={Boolean(errors.business)} {...register("business")} />
+          <Input id="f-business" autoComplete="organization" placeholder="Company or brand name" {...register("business")} />
         </Field>
         <Field id="f-website" label="Website" error={errors.website?.message}>
           <Input id="f-website" type="url" inputMode="url" autoComplete="url" placeholder="yourbrand.com" invalid={Boolean(errors.website)} {...register("website")} />
         </Field>
-        <Field id="f-service" label="Service" error={errors.service?.message}>
+        <Field id="f-service" label="Service">
           <Select id="f-service" {...register("service")}>
             <option value="">Select a service</option>
             {services.map((s) => (
@@ -85,7 +87,7 @@ export function ContactForm({ services, whatsapp, defaultService }: { services: 
           </Select>
         </Field>
       </div>
-      <Field id="f-budget" label="Monthly budget" error={errors.budget?.message}>
+      <Field id="f-budget" label="Monthly budget">
         <Select id="f-budget" {...register("budget")}>
           <option value="">Select a range</option>
           {BUDGET_OPTIONS.map((o) => (
@@ -98,13 +100,16 @@ export function ContactForm({ services, whatsapp, defaultService }: { services: 
       <Field id="f-message" label="Message" error={errors.message?.message} hint="Tell us about your goals, current challenges and timeline (min. 10 characters)." required>
         <Textarea id="f-message" rows={5} placeholder="What would you like to achieve?" invalid={Boolean(errors.message)} {...register("message")} />
       </Field>
-      <FormError message={status === "error" ? message : null} />
-      <SubmitButton submitting={status === "submitting"}>
-        <span>Send Enquiry</span>
-        <Icon name="arrow_forward" size={18} />
+      <SubmitButton>
+        <Icon name="chat" size={18} />
+        <span>Send via WhatsApp</span>
       </SubmitButton>
       <p className="text-center font-body-sm text-body-sm text-on-surface-variant">
-        We only use your details to reply to this enquiry. See our <a href="/privacy-policy" className="text-secondary underline">privacy policy</a>.
+        Your message opens in WhatsApp, ready to send. See our{" "}
+        <Link href="/privacy-policy" className="text-secondary underline">
+          privacy policy
+        </Link>
+        .
       </p>
     </form>
   );

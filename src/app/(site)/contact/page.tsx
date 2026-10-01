@@ -15,17 +15,15 @@ export const metadata = buildMetadata({
   path: "/contact",
 });
 
-type Props = { searchParams: Promise<{ service?: string }> };
-
-export default async function ContactPage({ searchParams }: Props) {
-  const [{ service }, services, settings] = await Promise.all([searchParams, getServices(), getSettings()]);
+export default async function ContactPage() {
+  const [services, settings] = await Promise.all([getServices(), getSettings()]);
   return (
     <>
-      <PageHero eyebrow="Contact Executive Team" title="Let's talk about your growth" description="Tell us where you are and where you want to be. A strategist replies within 24 hours — usually much sooner on WhatsApp." />
+      <PageHero eyebrow="Contact Executive Team" title="Let's talk about your growth" description="Tell us where you are and where you want to be. Send your details on WhatsApp or email — a strategist replies within 24 hours." />
       <Container as="section" className="grid gap-space-lg pb-space-xl lg:grid-cols-12">
         <div className="rounded-3xl bg-surface-container-lowest p-space-lg shadow-lg lg:col-span-7 lg:p-space-xl">
           <h2 className="mb-space-md font-headline-sm text-headline-sm font-bold text-on-surface">Send an enquiry</h2>
-          <ContactForm services={services.map((s) => s.title)} whatsapp={settings.whatsapp} defaultService={service} />
+          <ContactForm services={services.map((s) => s.title)} whatsapp={settings.whatsapp} email={settings.email} />
         </div>
         <div className="space-y-space-md lg:col-span-5">
           <DirectChannels settings={settings} />

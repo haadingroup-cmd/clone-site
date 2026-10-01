@@ -95,7 +95,7 @@ export function ConsultationSection({ settings }: { settings: SiteSettings }) {
               Complete this 30-second form. Our team will review your digital footprint and respond with tailored growth roadmap options within 24 hours.
             </p>
           </div>
-          <ConsultationForm whatsapp={settings.whatsapp} />
+          <ConsultationForm whatsapp={settings.whatsapp} email={settings.email} />
           <div className="flex items-center gap-space-xs rounded-xl bg-surface-container-low p-space-sm font-label-md text-label-md text-on-surface-variant">
             <Icon name="bolt" size={20} className="text-secondary" />
             <span>Personally reviewed by {settings.founderName} within 24 hours.</span>
@@ -110,7 +110,7 @@ export function ConsultationSection({ settings }: { settings: SiteSettings }) {
               </span>
               <span>
                 <span className="block font-label-lg text-label-lg">Prefer instant answers?</span>
-                <span className="block font-body-sm text-body-sm text-on-primary-container">Run the free website audit now</span>
+                <span className="block font-body-sm text-body-sm text-on-primary-container">Request a free website audit</span>
               </span>
             </span>
             <Icon name="chevron_right" size={22} className="transition-transform group-hover:translate-x-1" />

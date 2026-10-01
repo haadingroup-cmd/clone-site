@@ -7,7 +7,6 @@ import { JsonLd } from "@/components/seo/JsonLd";
 import { Container } from "@/components/ui/Container";
 import { Icon } from "@/components/ui/Icon";
 import { getBlogPost, getBlogPosts, getSettings } from "@/lib/data";
-import { sanitizeRichText } from "@/lib/sanitize";
 import { buildMetadata } from "@/lib/seo/metadata";
 import { articleSchema, breadcrumbSchema } from "@/lib/seo/schema";
 import { absoluteUrl } from "@/lib/site";
@@ -69,7 +68,7 @@ export default async function BlogPostPage({ params }: Props) {
           <BlogCover src={post.coverImage} alt={post.title} priority sizes="(min-width: 1024px) 896px, 100vw" className="mt-space-lg aspect-[1200/630] w-full rounded-2xl shadow-md" />
         </Container>
         <Container className="max-w-3xl">
-          <div className="prose prose-hg max-w-none prose-headings:font-bold prose-a:font-semibold prose-img:rounded-xl" dangerouslySetInnerHTML={{ __html: sanitizeRichText(post.content) }} />
+          <div className="prose prose-hg max-w-none prose-headings:font-bold prose-a:font-semibold prose-img:rounded-xl" dangerouslySetInnerHTML={{ __html: post.content }} />
           {post.tags.length ? (
             <ul className="mt-space-lg flex flex-wrap gap-2" aria-label="Tags">
               {post.tags.map((t) => (

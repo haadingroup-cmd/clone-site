@@ -1,30 +1,18 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useMemo, useState } from "react";
-import { useForm } from "react-hook-form";
-import type { z } from "zod";
-import { Field, Honeypot, Input, Textarea } from "@/components/forms/fields";
-import { FormError, FormSuccess, SubmitButton } from "@/components/forms/FormFeedback";
-import { useApiForm } from "@/components/forms/useApiForm";
-import { useStartedAt } from "@/components/forms/useStartedAt";
 import { Icon } from "@/components/ui/Icon";
 import { CALCULATOR, calculateEstimate, type BuilderService, type HorizonId, type StageId } from "@/content/calculator";
 import { cn, formatPKR, formatUSD } from "@/lib/utils";
-import { whatsappLink } from "@/lib/whatsapp";
-import { packageRequestSchema } from "@/lib/validations/package";
-
-type FormIn = z.input<typeof packageRequestSchema>;
-type FormOut = z.output<typeof packageRequestSchema>;
+import { mailtoLink, whatsappLink } from "@/lib/whatsapp";
 
 const DEFAULT_SELECTION = ["meta-ads", "seo"];
 
-/** Stitch "Interactive Architecture Engine" — real calculation from shared config, server re-verified. */
+/** Stitch "Interactive Architecture Engine" — live estimate from the shared calculator config. */
 export function PackageBuilder({ services, whatsapp, email }: { services: BuilderService[]; whatsapp: string; email: string }) {
   const [selected, setSelected] = useState<string[]>(() => DEFAULT_SELECTION.filter((slug) => services.some((s) => s.slug === slug)));
   const [stage, setStage] = useState<StageId>("startup");
   const [horizon, setHorizon] = useState<HorizonId>("1m");
-  const [showForm, setShowForm] = useState(false);
 
   const chosen = useMemo(() => services.filter((s) => selected.includes(s.slug)), [services, selected]);
   const estimate = useMemo(() => calculateEstimate(chosen, stage, horizon), [chosen, stage, horizon]);
@@ -199,95 +187,23 @@ export function PackageBuilder({ services, whatsapp, email }: { services: Builde
               >
                 <Icon name="chat" size={20} /> Send Package via WhatsApp
               </a>
-              <button
-                type="button"
-                disabled={chosen.length === 0}
-                onClick={() => setShowForm(true)}
-                aria-expanded={showForm}
-                className="flex w-full items-center justify-center gap-1.5 rounded-lg bg-surface-container-low/20 py-2.5 text-center font-label-md text-label-md font-semibold text-on-primary transition-all hover:bg-surface-container-low/30 disabled:opacity-50"
+              <a
+                href={chosen.length ? mailtoLink(email, "Custom package request", summaryText) : undefined}
+                aria-disabled={chosen.length === 0}
+                className={cn(
+                  "flex w-full items-center justify-center gap-1.5 rounded-lg bg-surface-container-low/20 py-2.5 text-center font-label-md text-label-md font-semibold text-on-primary transition-all hover:bg-surface-container-low/30",
+                  chosen.length === 0 && "pointer-events-none opacity-50",
+                )}
               >
-                <Icon name="description" size={18} /> Submit Official Package Request
-              </button>
+                <Icon name="mail" size={18} /> Send Package Request by Email
+              </a>
             </div>
-            {showForm && chosen.length > 0 ? (
-              <PackageRequestForm services={selected} stage={stage} horizon={horizon} whatsapp={whatsapp} summary={summaryText} onClose={() => setShowForm(false)} />
-            ) : null}
             <p className="font-body-sm text-body-sm text-on-primary-container">
-              Estimates use our published starting prices and are confirmed after a free scoping call. Questions? <a className="underline" href={`mailto:${email}`}>{email}</a>
+              Estimates use our published starting prices and are confirmed after a free scoping call.
             </p>
           </div>
         </div>
       </div>
     </div>
-  );
-}
-
-function PackageRequestForm({
-  services,
-  stage,
-  horizon,
-  whatsapp,
-  summary,
-  onClose,
-}: {
-  services: string[];
-  stage: StageId;
-  horizon: HorizonId;
-  whatsapp: string;
-  summary: string;
-  onClose: () => void;
-}) {
-  const startedAt = useStartedAt();
-  const {
-    register,
-    handleSubmit,
-    setError,
-    formState: { errors },
-  } = useForm<FormIn, unknown, FormOut>({
-    resolver: zodResolver(packageRequestSchema),
-    defaultValues: { name: "", phone: "", email: "", business: "", message: "", services, stage, horizon, company_fax: "" },
-  });
-  const { status, message, submit, result } = useApiForm<FormIn, { id: string; monthlyPkr: number }>("/api/package-request", setError);
-
-  if (status === "success" && result) {
-    return (
-      <FormSuccess
-        tone="dark"
-        body={`We've saved your package request (${formatPKR(result.monthlyPkr)}/month estimate). A strategist will confirm scope and timelines within 24 hours.`}
-        whatsappNumber={whatsapp}
-        whatsappMessage={summary}
-        onReset={onClose}
-      />
-    );
-  }
-
-  return (
-    <form
-      noValidate
-      className="relative space-y-space-sm rounded-lg bg-on-primary/5 p-space-sm"
-      onSubmit={handleSubmit((values) => submit({ ...values, services, stage, horizon, startedAt: startedAt.current }))}
-    >
-      <Honeypot {...register("company_fax")} />
-      <Field id="p-name" label="Name" tone="dark" error={errors.name?.message} required>
-        <Input id="p-name" tone="dark" autoComplete="name" invalid={Boolean(errors.name)} {...register("name")} />
-      </Field>
-      <Field id="p-phone" label="WhatsApp / Phone" tone="dark" error={errors.phone?.message} required>
-        <Input id="p-phone" tone="dark" type="tel" inputMode="tel" autoComplete="tel" placeholder="+92 300 1234567" invalid={Boolean(errors.phone)} {...register("phone")} />
-      </Field>
-      <Field id="p-email" label="Email" tone="dark" error={errors.email?.message}>
-        <Input id="p-email" tone="dark" type="email" autoComplete="email" invalid={Boolean(errors.email)} {...register("email")} />
-      </Field>
-      <Field id="p-business" label="Business" tone="dark" error={errors.business?.message}>
-        <Input id="p-business" tone="dark" autoComplete="organization" {...register("business")} />
-      </Field>
-      <Field id="p-notes" label="Notes (optional)" tone="dark" error={errors.message?.message}>
-        <Textarea id="p-notes" tone="dark" rows={3} {...register("message")} />
-      </Field>
-      {errors.services?.message ? <FormError tone="dark" message={errors.services.message} /> : null}
-      <FormError tone="dark" message={status === "error" ? message : null} />
-      <SubmitButton submitting={status === "submitting"}>
-        Submit Request <Icon name="arrow_forward" size={18} />
-      </SubmitButton>
-    </form>
   );
 }

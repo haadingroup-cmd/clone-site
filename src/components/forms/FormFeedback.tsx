@@ -1,35 +1,19 @@
 import { Icon } from "@/components/ui/Icon";
-import { whatsappLink } from "@/lib/whatsapp";
 import { cn } from "@/lib/utils";
 
-export function FormError({ message, tone = "light" }: { message: string | null; tone?: "light" | "dark" }) {
-  if (!message) return null;
-  return (
-    <div
-      role="alert"
-      className={cn(
-        "flex items-start gap-2 rounded-xl p-space-sm font-body-sm text-body-sm",
-        tone === "dark" ? "bg-error/25 text-[#ffdad6]" : "bg-error-container text-on-error-container",
-      )}
-    >
-      <Icon name="error" size={18} className="mt-0.5" />
-      <span>{message}</span>
-    </div>
-  );
-}
-
-export function FormSuccess({
-  title = "Thank you! Your request has been received.",
-  body,
-  whatsappMessage,
-  whatsappNumber,
+/** Shown after a form opens WhatsApp — lets the visitor reopen it or use email instead. */
+export function FormSent({
+  title = "Thank you! Your request is ready to send.",
+  body = "WhatsApp has opened with your details filled in — just press send. If it didn't open, use one of the buttons below.",
+  whatsappHref,
+  mailHref,
   onReset,
   tone = "light",
 }: {
   title?: string;
-  body: string;
-  whatsappMessage: string;
-  whatsappNumber?: string;
+  body?: string;
+  whatsappHref: string;
+  mailHref: string;
   onReset?: () => void;
   tone?: "light" | "dark";
 }) {
@@ -42,25 +26,31 @@ export function FormSuccess({
         <p className={cn("font-headline-sm text-headline-sm font-bold", tone === "dark" ? "text-on-primary" : "text-on-surface")}>{title}</p>
       </div>
       <p className={cn("font-body-sm text-body-sm", tone === "dark" ? "text-on-primary-container" : "text-on-surface-variant")}>{body}</p>
-      <div className="flex flex-col gap-2 sm:flex-row">
+      <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap">
         <a
-          href={whatsappLink(whatsappMessage, whatsappNumber)}
+          href={whatsappHref}
           target="_blank"
           rel="noopener noreferrer"
           className="flex items-center justify-center gap-2 rounded-xl bg-whatsapp px-space-md py-3 font-label-lg text-label-lg font-bold text-white transition-transform hover:scale-[1.02]"
         >
-          <Icon name="chat" size={18} /> Chat on WhatsApp
+          <Icon name="chat" size={18} /> Open WhatsApp
+        </a>
+        <a
+          href={mailHref}
+          className={cn(
+            "flex items-center justify-center gap-2 rounded-xl px-space-md py-3 font-label-lg text-label-lg",
+            tone === "dark" ? "bg-on-primary/10 text-on-primary hover:bg-on-primary/20" : "bg-surface-container-lowest text-secondary shadow-sm hover:bg-surface-container",
+          )}
+        >
+          <Icon name="mail" size={18} /> Send by email instead
         </a>
         {onReset ? (
           <button
             type="button"
             onClick={onReset}
-            className={cn(
-              "rounded-xl px-space-md py-3 font-label-lg text-label-lg",
-              tone === "dark" ? "text-on-primary hover:bg-on-primary/10" : "text-secondary hover:bg-surface-container",
-            )}
+            className={cn("rounded-xl px-space-md py-3 font-label-lg text-label-lg", tone === "dark" ? "text-on-primary-container hover:text-on-primary" : "text-on-surface-variant hover:text-secondary")}
           >
-            Send another request
+            Start over
           </button>
         ) : null}
       </div>
@@ -68,35 +58,16 @@ export function FormSuccess({
   );
 }
 
-export function SubmitButton({
-  submitting,
-  children,
-  submittingLabel = "Submitting...",
-  className,
-}: {
-  submitting: boolean;
-  children: React.ReactNode;
-  submittingLabel?: string;
-  className?: string;
-}) {
+export function SubmitButton({ children, className }: { children: React.ReactNode; className?: string }) {
   return (
     <button
       type="submit"
-      disabled={submitting}
-      aria-busy={submitting}
       className={cn(
-        "flex w-full items-center justify-center gap-space-xs rounded-xl bg-secondary py-3.5 font-label-lg text-label-lg font-bold text-on-secondary shadow-md transition-all hover:bg-electric-blue active:scale-[0.98] disabled:cursor-wait disabled:opacity-80",
+        "flex w-full items-center justify-center gap-space-xs rounded-xl bg-secondary py-3.5 font-label-lg text-label-lg font-bold text-on-secondary shadow-md transition-all hover:bg-electric-blue active:scale-[0.98]",
         className,
       )}
     >
-      {submitting ? (
-        <>
-          <Icon name="progress_activity" size={18} className="animate-spin" />
-          {submittingLabel}
-        </>
-      ) : (
-        children
-      )}
+      {children}
     </button>
   );
 }

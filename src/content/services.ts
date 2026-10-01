@@ -1,10 +1,8 @@
 import type { ServiceData } from "@/types";
 
 /**
- * Default service catalogue. Used to seed the database (prisma/seed.ts) and
- * as a read-only fallback when the database is unreachable. Once seeded,
- * edit services from /admin/services — the database is the source of truth.
- * Prices are in PKR and mirror the Stitch design.
+ * Service catalogue (prices in PKR, mirroring the Stitch design).
+ * Edit here, push to GitHub, and Vercel redeploys the site.
  */
 export const DEFAULT_SERVICES: ServiceData[] = [
   {

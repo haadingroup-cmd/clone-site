@@ -97,15 +97,3 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(function 
     />
   );
 });
-
-/** Hidden honeypot field — real users never see or fill it. */
-export function Honeypot(props: React.InputHTMLAttributes<HTMLInputElement>) {
-  return (
-    <div aria-hidden="true" className="absolute -left-[9999px] h-px w-px overflow-hidden">
-      <label>
-        Company fax
-        <input type="text" tabIndex={-1} autoComplete="off" {...props} />
-      </label>
-    </div>
-  );
-}

@@ -4,8 +4,8 @@ import { AUDIT_CATEGORIES } from "@/lib/audit/types";
 
 export const CHECKLIST_PDF = "/downloads/haadinglobal-2026-digital-marketing-audit-checklist.pdf";
 
-/** Stitch "How Strong Is Your Digital Presence?" lead magnet, wired to the real audit engine. */
-export function AuditPromo({ headingLevel = "h2" }: { headingLevel?: "h1" | "h2" }) {
+/** Stitch "How Strong Is Your Digital Presence?" lead magnet — audit requests go to the team via WhatsApp. */
+export function AuditPromo({ whatsapp, email, headingLevel = "h2" }: { whatsapp: string; email: string; headingLevel?: "h1" | "h2" }) {
   const Heading = headingLevel;
   return (
     <div className="relative space-y-space-md overflow-hidden rounded-xl bg-primary-container p-6 text-on-primary-container shadow-xl lg:p-10">
@@ -18,10 +18,10 @@ export function AuditPromo({ headingLevel = "h2" }: { headingLevel?: "h1" | "h2"
             </div>
             <Heading className="font-headline-md text-headline-md font-bold tracking-tight text-on-primary lg:text-headline-lg">How Strong Is Your Digital Presence?</Heading>
             <p className="font-body-sm text-body-sm lg:text-body-md">
-              Get an objective, automated assessment of your website&apos;s technical SEO, content, speed signals, social previews, accessibility and conversion setup — with fixes for every issue.
+              Get a no-obligation review of your website&apos;s technical SEO, content, speed, social previews, accessibility and conversion setup — with clear fixes for every issue.
             </p>
           </div>
-          <AuditForm />
+          <AuditForm whatsapp={whatsapp} email={email} />
         </div>
         <div className="space-y-3">
           <span className="block font-label-eyebrow text-label-eyebrow uppercase tracking-wider text-on-primary">What the audit checks</span>
@@ -33,11 +33,11 @@ export function AuditPromo({ headingLevel = "h2" }: { headingLevel?: "h1" | "h2"
               </div>
             ))}
             <div className="space-y-1 rounded-lg bg-surface-container-lowest/10 p-3 backdrop-blur-md">
-              <Icon name="picture_as_pdf" size={18} className="text-electric-blue" />
-              <span className="block font-label-md text-label-md font-semibold text-on-primary">PDF report</span>
+              <Icon name="schedule" size={18} className="text-electric-blue" />
+              <span className="block font-label-md text-label-md font-semibold text-on-primary">Reply within 24h</span>
             </div>
           </div>
-          <p className="font-body-sm text-body-sm">Scores are calculated only from checks we can actually run on your page — no invented numbers.</p>
+          <p className="font-body-sm text-body-sm">Reviewed by our team — you get honest findings and practical fixes, not a sales pitch.</p>
           <div className="flex items-center justify-between gap-3 rounded-xl bg-surface-container-lowest p-4 text-primary shadow-md">
             <div className="flex min-w-0 items-center gap-3">
               <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-surface-container-high">

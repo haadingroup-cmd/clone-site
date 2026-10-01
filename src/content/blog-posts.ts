@@ -1,6 +1,6 @@
 /**
  * Existing HaadinGlobal blog articles (migrated from the previous site).
- * Seeded as PUBLISHED posts; manage them in /admin/blog afterwards.
+ * Add a new object to this list to publish a new article.
  */
 
 export type LegacyBlogPost = {

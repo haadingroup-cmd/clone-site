@@ -3,7 +3,7 @@ import { CaseStudyList } from "@/components/results/CaseStudyList";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { Container } from "@/components/ui/Container";
 import { Icon } from "@/components/ui/Icon";
-import { getCaseStudies } from "@/lib/data";
+import { getCaseStudies, getSettings } from "@/lib/data";
 import { buildMetadata } from "@/lib/seo/metadata";
 import { breadcrumbSchema } from "@/lib/seo/schema";
 
@@ -17,7 +17,7 @@ export const metadata = buildMetadata({
 });
 
 export default async function ResultsPage() {
-  const studies = await getCaseStudies();
+  const [studies, settings] = await Promise.all([getCaseStudies(), getSettings()]);
   return (
     <>
       <Container as="section" className="pb-space-lg pt-space-md lg:pt-16">
@@ -40,7 +40,7 @@ export default async function ResultsPage() {
       </Container>
 
       <Container as="section" className="mt-space-lg">
-        <AuditPromo />
+        <AuditPromo whatsapp={settings.whatsapp} email={settings.email} />
       </Container>
 
       <Container as="section" className="space-y-space-xs pt-space-lg text-center">

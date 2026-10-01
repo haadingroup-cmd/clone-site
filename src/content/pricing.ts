@@ -1,6 +1,6 @@
 import type { PricingPlanData } from "@/types";
 
-/** Default retainer tiers (Stitch "Verified Retainers"). Editable in /admin/pricing once seeded. */
+/** Default retainer tiers (Stitch "Verified Retainers"). Edit here to change the pricing page. */
 export const DEFAULT_PRICING_PLANS: PricingPlanData[] = [
   {
     slug: "starter",

@@ -38,14 +38,12 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   reactStrictMode: true,
   images: {
-    // Only local images are optimised. Remote URLs entered in the admin are
-    // rendered as plain <img> so the optimiser can't be used as an open proxy.
+    // Only local images are optimised.
     formats: ["image/avif", "image/webp"],
   },
   async headers() {
     return [
       { source: "/:path*", headers: securityHeaders },
-      { source: "/admin/:path*", headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }, { key: "Cache-Control", value: "no-store" }] },
     ];
   },
   // Keep URLs from the previous version of the site working.
@@ -57,8 +55,6 @@ const nextConfig: NextConfig = {
       { source: "/team", destination: "/about", permanent: true },
       { source: "/careers", destination: "/contact", permanent: true },
       { source: "/agency/:slug*", destination: "/services", permanent: true },
-      { source: "/dashboard", destination: "/admin", permanent: false },
-      { source: "/login", destination: "/admin/login", permanent: false },
     ];
   },
 };

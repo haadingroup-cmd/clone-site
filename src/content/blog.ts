@@ -1,7 +1,7 @@
 import type { BlogPostData } from "@/types";
 import { LEGACY_BLOG_POSTS } from "@/content/blog-posts";
 
-/** Legacy posts converted to the BlogPostData shape (seed + offline fallback). */
+/** Blog posts in the shape the UI uses. */
 export const DEFAULT_BLOG_POSTS: BlogPostData[] = LEGACY_BLOG_POSTS.map((post, index) => {
   const parsed = new Date(post.date);
   const publishedAt = Number.isNaN(parsed.getTime()) ? null : new Date(parsed.getTime() + 12 * 3600_000).toISOString();

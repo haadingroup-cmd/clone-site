@@ -75,11 +75,3 @@ export const optionalWebsiteSchema = z
       return false;
     }
   }, "Enter a valid website address");
-
-/** Anti-spam fields sent by every public form. */
-export const antiSpamSchema = z.object({
-  // Honeypot: hidden from humans, bots tend to fill it.
-  company_fax: z.string().max(200).optional(),
-  // Epoch ms when the form was rendered.
-  startedAt: z.coerce.number().int().nonnegative().optional(),
-});

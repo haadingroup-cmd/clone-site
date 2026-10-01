@@ -1,5 +1,4 @@
 import { z } from "zod";
-import { antiSpamSchema, optionalEmailSchema, phoneSchema } from "@/lib/validations/common";
 
 export const AUDIT_SECTORS = [
   { value: "ecommerce", label: "Direct-to-Consumer / eCommerce" },
@@ -13,9 +12,7 @@ export const AUDIT_SECTORS = [
 const sectorValues = AUDIT_SECTORS.map((s) => s.value) as [string, ...string[]];
 
 /**
- * Only public http(s) URLs with a real hostname are accepted. Private
- * network targets are additionally rejected after DNS resolution
- * (see src/lib/audit/safe-fetch.ts).
+ * Only public http(s) URLs with a real hostname are accepted.
  */
 export const auditUrlSchema = z
   .string({ error: "Website URL is required" })
@@ -46,13 +43,9 @@ export const auditUrlSchema = z
     }
   });
 
-export const auditRequestSchema = z
-  .object({
-    url: auditUrlSchema,
-    phone: phoneSchema.optional().or(z.literal("").transform(() => undefined)),
-    email: optionalEmailSchema,
-    sector: z.enum(sectorValues).optional().or(z.literal("").transform(() => undefined)),
-  })
-  .extend(antiSpamSchema.shape);
+export const auditRequestSchema = z.object({
+  url: auditUrlSchema,
+  sector: z.enum(sectorValues).optional().or(z.literal("").transform(() => undefined)),
+});
 
 export type AuditRequestInput = z.input<typeof auditRequestSchema>;

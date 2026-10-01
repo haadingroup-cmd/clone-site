@@ -1,15 +1,8 @@
-/**
- * Shared, framework-agnostic domain types. The Prisma models are the source
- * of truth in the database; these types describe the shape the UI consumes
- * (JSON columns parsed, dates serialised) so pages work identically whether
- * data comes from the database or from the built-in defaults.
- */
+/** Shared content types used by src/content/* and the UI. */
 
 export type ServiceCategory = "PERFORMANCE" | "TECH" | "CREATIVE";
 export type PriceUnit = "MONTH" | "PROJECT";
 export type PlanVariant = "STANDARD" | "POPULAR" | "PREMIUM";
-export type LeadStatus = "NEW" | "CONTACTED" | "QUALIFIED" | "CONVERTED" | "LOST";
-export type LeadSource = "CONTACT" | "CONSULTATION" | "PACKAGE_BUILDER" | "AUDIT";
 
 export type ProcessStep = { title: string; description: string };
 export type QA = { question: string; answer: string };
@@ -132,6 +125,3 @@ export type SiteSettings = {
   };
 };
 
-export type ApiSuccess<T> = { ok: true; data: T };
-export type ApiError = { ok: false; error: string; fieldErrors?: Record<string, string[] | undefined> };
-export type ApiResponse<T> = ApiSuccess<T> | ApiError;
